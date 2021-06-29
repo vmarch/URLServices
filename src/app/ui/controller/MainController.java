@@ -49,7 +49,6 @@ public class MainController {
     @FXML
     void onReadURL() {
         if (!textFieldInputURL.getText().isEmpty()) {
-
             urlService.setStrURL(textFieldInputURL.getText());
             urlService.restart();
         }
@@ -121,11 +120,8 @@ public class MainController {
         // if succeeded
         extractURLService.setOnSucceeded(s -> {
             System.out.println(this.getClass().getSimpleName() + " -> extractURLService Succeeded");
-
             history.setHistory(actualLink, actualHtml, extractURLService.getValue());
-
             setupListView(extractURLService.getValue());
-
             myWebView.getEngine().load(textFieldInputURL.getText());
         });
 
@@ -133,18 +129,16 @@ public class MainController {
         extractURLService.setOnFailed(fail -> {
             fail.getSource().getException().printStackTrace();
             System.out.println(this.getClass().getSimpleName() + " -> extractURLService Failed");
-
         });
 
         //if cancelled
         extractURLService.setOnCancelled(cancelled -> {
-
             System.out.println(this.getClass().getSimpleName() + " -> extractURLService Cancelled");
         });
     }
 
     private void setupListView(List<Hyperlink> linksNew) {
-         hyperlinkObservableList = FXCollections.observableArrayList(linksNew);
+        hyperlinkObservableList = FXCollections.observableArrayList(linksNew);
         hyperLinksSetOnAction(hyperlinkObservableList);
         stringListView.getItems().setAll(hyperlinkObservableList);
     }
@@ -169,7 +163,6 @@ public class MainController {
         textAreaTextSite.setText(sitePack.getBody());
         setupListView(sitePack.getHyperlinks());
 
-//        myWebView.getEngine().load(textFieldInputURL.getText());
         goBackWebView();
 
     }

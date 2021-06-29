@@ -16,7 +16,7 @@ public class ExtractURLService extends Service<List<Hyperlink>> {
 //    private final String REGEX_URL = "((http|ftp|https):\\/\\/)?(([\\w.-]*)\\.([\\w]*))";
 
     private final static String REGEX_URL = "\\b(https?|ftp|file)://[-a-zA-Z0-9+&@#/%?=~_|!:,.;]*[-a-zA-Z0-9+&@#/%=~_|]";
-//    private final static String REGEX_URL = "\\b(https?|ftp|file)://[-a-zA-Z0-9+&@#/%?=~_|!:,.;]*[-a-zA-Z0-9+&@#/%=~_|]";
+    //    private final static String REGEX_URL = "\\b(https?|ftp|file)://[-a-zA-Z0-9+&@#/%?=~_|!:,.;]*[-a-zA-Z0-9+&@#/%=~_|]";
     private String textHTML;
 
     public String getTextHTML() {
