@@ -58,12 +58,12 @@ public class MainController {
         progressBar.progressProperty().bind(webView.getEngine().getLoadWorker().progressProperty());
 
 //        textFieldInputURL.setText("https://vmarch.github.io/");    //for testing
-        textFieldInputURL.setText("http://google.com");            //for testing
+//        textFieldInputURL.setText("http://google.com");            //for testing
 //        textFieldInputURL.setText("https://newfoundry.de");            //for testing
-//        textFieldInputURL.setText("http://schema.org");            //for testing
+//        textFieldInputURL.setText("http://schema.org");            //for testing -> BAG
 
         myWebView = webView;
-        myWebView.getEngine().getHistory().setMaxSize(5);
+        myWebView.getEngine().getHistory().setMaxSize(History.MAX_HISTORY);  //The count of steps can change in History.
 
         hyperlinkObservableList = FXCollections.observableArrayList();
         stringListView.setItems(hyperlinkObservableList);
