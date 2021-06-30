@@ -3,6 +3,7 @@ package app.tools;
 import app.model.SitePack;
 import javafx.scene.control.Hyperlink;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class History {
@@ -19,7 +20,12 @@ public class History {
         return instance;
     }
 
+    private final int MAX_HISTORY = 5;
+
+
     private int countHistory = 5;
+    private List<String> listLinks = new ArrayList<>();
+
 
     private String link1 = "";
     private String link2 = "";
@@ -39,13 +45,13 @@ public class History {
     private List<Hyperlink> hyperlinkList4 = null;
     private List<Hyperlink> hyperlinkList5 = null;
 
-
+    //region SET History
     public void setHistory(String newLink, String newHtmlText, List<Hyperlink> newHyperlinkList) {
         System.out.println(this.getClass().getSimpleName() + " -> setHistory() ");
         setLink(newLink);
         setHtmlText(newHtmlText);
         setHyperLink(newHyperlinkList);
-        if (countHistory < 5) {
+        if (countHistory < MAX_HISTORY) {
             countHistory++;
         }
     }
@@ -53,6 +59,7 @@ public class History {
     private void setLink(String newLink) {
         switch (countHistory) {
             case 5 -> {
+
                 link1 = link2;
                 link2 = link3;
                 link3 = link4;
@@ -101,15 +108,17 @@ public class History {
             case 0 -> hyperlinkList1 = newHyperlinkList;
         }
     }
+    //endregion
 
+    //region GET History
     public SitePack getLastHistory() {
         if (countHistory > 0) {
             countHistory--;
 
 //            System.out.println(this.getClass().getSimpleName() + " -> getLastHistory() countHistory = " + countHistory);
 
-            SitePack sitePack = new SitePack(getLastLink(), "", getLastHtmlText());
-            sitePack.setHyperlinks(getLastHyperlinkList());
+            SitePack sitePack = new SitePack(getCurrentLink(), "", getCurrentHtmlText());
+            sitePack.setHyperlinks(getCurrentHyperlinkList());
 
             return sitePack;
         } else {
@@ -117,7 +126,22 @@ public class History {
         }
     }
 
-    private String getLastLink() {
+    public SitePack getNextHistory() {
+        if (countHistory < MAX_HISTORY) {
+            countHistory++;
+
+//            System.out.println(this.getClass().getSimpleName() + " -> getLastHistory() countHistory = " + countHistory);
+
+            SitePack sitePack = new SitePack(getCurrentLink(), "", getCurrentHtmlText());
+            sitePack.setHyperlinks(getCurrentHyperlinkList());
+
+            return sitePack;
+        } else {
+            return null;
+        }
+    }
+
+    private String getCurrentLink() {
         return switch (countHistory) {
             case 5 -> link5;
             case 4 -> link4;
@@ -128,7 +152,7 @@ public class History {
         };
     }
 
-    private String getLastHtmlText() {
+    private String getCurrentHtmlText() {
         return switch (countHistory) {
             case 5 -> htmlText5;
             case 4 -> htmlText4;
@@ -139,7 +163,7 @@ public class History {
         };
     }
 
-    private List<Hyperlink> getLastHyperlinkList() {
+    private List<Hyperlink> getCurrentHyperlinkList() {
         return switch (countHistory) {
             case 5 -> hyperlinkList5;
             case 4 -> hyperlinkList4;
@@ -149,4 +173,5 @@ public class History {
             default -> null;
         };
     }
+    //endregion
 }

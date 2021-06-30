@@ -32,9 +32,6 @@ public class MainController {
     private TextField textFieldInputURL;
 
     @FXML
-    private Button btnReadURL;
-
-    @FXML
     private TextArea textAreaTextSite;
 
     @FXML
@@ -49,6 +46,7 @@ public class MainController {
     @FXML
     void onReadURL() {
         if (!textFieldInputURL.getText().isEmpty()) {
+
             urlService.setStrURL(textFieldInputURL.getText());
             urlService.restart();
         }
@@ -58,8 +56,8 @@ public class MainController {
     void initialize() {
 
         history = History.getInstance();
-
         progressBar.progressProperty().bind(webView.getEngine().getLoadWorker().progressProperty());
+
         textFieldInputURL.setText("https://vmarch.github.io/");    //for testing
 //        textFieldInputURL.setText("http://google.com");            //for testing
 //        textFieldInputURL.setText("https://newfoundry.de");            //for testing
@@ -123,6 +121,12 @@ public class MainController {
             history.setHistory(actualLink, actualHtml, extractURLService.getValue());
             setupListView(extractURLService.getValue());
             myWebView.getEngine().load(textFieldInputURL.getText());
+
+//            myWebView.getEngine().getLoadWorker().getState();
+//            myWebView.getEngine().getLoadWorker().runningProperty();
+
+
+
         });
 
         // if failed
@@ -155,16 +159,21 @@ public class MainController {
     }
 
     public void onBackAction(ActionEvent actionEvent) {
-
         SitePack sitePack = history.getLastHistory();
 //        System.out.println(this.getClass().getSimpleName() + " -> onBackAction ");
-
         textFieldInputURL.setText(sitePack.getUrl());
         textAreaTextSite.setText(sitePack.getBody());
         setupListView(sitePack.getHyperlinks());
-
         goBackWebView();
+    }
 
+    public void onNextAction(ActionEvent actionEvent) {
+        SitePack sitePack = history.getNextHistory();
+//        System.out.println(this.getClass().getSimpleName() + " -> onBackAction ");
+        textFieldInputURL.setText(sitePack.getUrl());
+        textAreaTextSite.setText(sitePack.getBody());
+        setupListView(sitePack.getHyperlinks());
+        goForwardWebView();
     }
 
     public void goBackWebView() {
@@ -186,4 +195,5 @@ public class MainController {
             webHistory.go(entryList.size() > 1 && currentIndex < entryList.size() - 1 ? 1 : 0);
         });
     }
+
 }
