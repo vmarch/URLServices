@@ -11,6 +11,7 @@ public class History {
     private static History instance = null;
 
     private History() {
+        initLists();
     }
 
     public static History getInstance() {
@@ -21,155 +22,188 @@ public class History {
     }
 
     private final int MAX_HISTORY = 5;
+    private int currentHistoryPosition = 0; //Start of History from Empty value
 
+    //last Changed History Position: it is the maximum for going forward in History.
+    //may be present only in two conditions:
+    //   1) lastChangedHistoryPosition == currentHistoryPosition
+    //   2) lastChangedHistoryPosition > currentHistoryPosition
+    private int lastChangedHistoryPosition = currentHistoryPosition;
 
-    private int countHistory = 5;
-    private List<String> listLinks = new ArrayList<>();
+    private final List<String> listLinks = new ArrayList<>();
+    private final List<String> listHtmlText = new ArrayList<>();
+    private final List<List<Hyperlink>> listOfListHyperLinks = new ArrayList<>();
 
+    private void initLists() {
 
-    private String link1 = "";
-    private String link2 = "";
-    private String link3 = "";
-    private String link4 = "";
-    private String link5 = "";
-
-    private String htmlText1 = "";
-    private String htmlText2 = "";
-    private String htmlText3 = "";
-    private String htmlText4 = "";
-    private String htmlText5 = "";
-
-    private List<Hyperlink> hyperlinkList1 = null;
-    private List<Hyperlink> hyperlinkList2 = null;
-    private List<Hyperlink> hyperlinkList3 = null;
-    private List<Hyperlink> hyperlinkList4 = null;
-    private List<Hyperlink> hyperlinkList5 = null;
+        for (int i = 0; i < MAX_HISTORY; i++) {
+            listLinks.add(i, "");
+            listHtmlText.add(i, "");
+            listOfListHyperLinks.add(i, null);
+        }
+    }
 
     //region SET History
     public void setHistory(String newLink, String newHtmlText, List<Hyperlink> newHyperlinkList) {
         System.out.println(this.getClass().getSimpleName() + " -> setHistory() ");
-        setLink(newLink);
-        setHtmlText(newHtmlText);
-        setHyperLink(newHyperlinkList);
-        if (countHistory < MAX_HISTORY) {
-            countHistory++;
+        if (currentHistoryPosition <= MAX_HISTORY) {
+            setLink(newLink);
+            setHtmlText(newHtmlText);
+            setHyperLink(newHyperlinkList);
+
+            //increasing of current History Position and last Changed History Position
+            if (currentHistoryPosition < MAX_HISTORY) {
+                currentHistoryPosition++;
+                lastChangedHistoryPosition = currentHistoryPosition;
+            }
         }
     }
 
     private void setLink(String newLink) {
-        switch (countHistory) {
-            case 5 -> {
 
-                link1 = link2;
-                link2 = link3;
-                link3 = link4;
-                link4 = link5;
-                link5 = newLink;
+        //in case "5" when List of elements is full, mowing of all History elements to place with lower index.
+        // ( data from list with index 5 goes to index 4, then new data will write in index 5)
+        switch (currentHistoryPosition) {
+            case 5 -> {
+                for (int i = 0; i < MAX_HISTORY; i++) {
+                    if (i < MAX_HISTORY - 1) {
+                        listLinks.set(i, listLinks.get(i + 1));
+                    } else {
+                        listLinks.set(i, newLink);
+                    }
+                }
             }
-            case 4 -> link5 = newLink;
-            case 3 -> link4 = newLink;
-            case 2 -> link3 = newLink;
-            case 1 -> link2 = newLink;
-            case 0 -> link1 = newLink;
+
+            case 4 -> listLinks.set(4, newLink);
+            case 3 -> listLinks.set(3, newLink);
+            case 2 -> listLinks.set(2, newLink);
+            case 1 -> listLinks.set(1, newLink);
+            case 0 -> listLinks.set(0, newLink);
         }
     }
 
     private void setHtmlText(String newHtmlText) {
 
-        switch (countHistory) {
+        //in case "5" when List of elements is full, mowing of all History elements to place with lower index.
+        // ( data from list with index 5 goes to index 4, then new data will write in index 5)
+        switch (currentHistoryPosition) {
             case 5 -> {
-                htmlText1 = htmlText2;
-                htmlText2 = htmlText3;
-                htmlText3 = htmlText4;
-                htmlText4 = htmlText5;
-                htmlText5 = newHtmlText;
+                for (int i = 0; i < MAX_HISTORY; i++) {
+                    if (i < MAX_HISTORY - 1) {
+                        listHtmlText.set(i, listHtmlText.get(i + 1));
+                    } else {
+                        listHtmlText.set(i, newHtmlText);
+                    }
+                }
             }
-            case 4 -> htmlText5 = newHtmlText;
-            case 3 -> htmlText4 = newHtmlText;
-            case 2 -> htmlText3 = newHtmlText;
-            case 1 -> htmlText2 = newHtmlText;
-            case 0 -> htmlText1 = newHtmlText;
+            case 4 -> listHtmlText.set(4, newHtmlText);
+            case 3 -> listHtmlText.set(3, newHtmlText);
+            case 2 -> listHtmlText.set(2, newHtmlText);
+            case 1 -> listHtmlText.set(1, newHtmlText);
+            case 0 -> listHtmlText.set(0, newHtmlText);
         }
     }
 
     private void setHyperLink(List<Hyperlink> newHyperlinkList) {
-        switch (countHistory) {
+//        System.out.println(this.getClass().getSimpleName() + " -> setHyperLink() newHyperlinkList = " + newHyperlinkList);
+
+        //in case "5" when List of elements is full, mowing of all History elements to place with lower index.
+        // ( data from list with index 5 goes to index 4, then new data will write in index 5)
+        switch (currentHistoryPosition) {
             case 5 -> {
-                hyperlinkList1 = hyperlinkList2;
-                hyperlinkList2 = hyperlinkList3;
-                hyperlinkList3 = hyperlinkList4;
-                hyperlinkList4 = hyperlinkList5;
-                hyperlinkList5 = newHyperlinkList;
+                for (int i = 0; i < MAX_HISTORY; i++) {
+                    if (i < MAX_HISTORY - 1) {
+                        listOfListHyperLinks.set(i, listOfListHyperLinks.get(i + 1));
+                    } else {
+                        listOfListHyperLinks.set(i, newHyperlinkList);
+                    }
+                }
             }
-            case 4 -> hyperlinkList5 = newHyperlinkList;
-            case 3 -> hyperlinkList4 = newHyperlinkList;
-            case 2 -> hyperlinkList3 = newHyperlinkList;
-            case 1 -> hyperlinkList2 = newHyperlinkList;
-            case 0 -> hyperlinkList1 = newHyperlinkList;
+            case 4 -> listOfListHyperLinks.set(4, newHyperlinkList);
+            case 3 -> listOfListHyperLinks.set(3, newHyperlinkList);
+            case 2 -> listOfListHyperLinks.set(2, newHyperlinkList);
+            case 1 -> listOfListHyperLinks.set(1, newHyperlinkList);
+            case 0 -> listOfListHyperLinks.set(0, newHyperlinkList);
         }
     }
     //endregion
 
     //region GET History
     public SitePack getLastHistory() {
-        if (countHistory > 0) {
-            countHistory--;
+        if (currentHistoryPosition > 1) {
+            currentHistoryPosition--; //decreasing of actual position for getting previous element from History list
 
-//            System.out.println(this.getClass().getSimpleName() + " -> getLastHistory() countHistory = " + countHistory);
+            System.out.println(this.getClass().getSimpleName() + " -> getLastHistory() countHistory = " + currentHistoryPosition);
+            System.out.println(this.getClass().getSimpleName() + " -> getLastHistory() listLinks.size()= " + listLinks.size());
+            System.out.println(this.getClass().getSimpleName() + " -> getLastHistory() listHtmlText.size()= " + listHtmlText.size());
+            System.out.println(this.getClass().getSimpleName() + " -> getLastHistory() listOfListHyperLinks.size()= " + listOfListHyperLinks.size());
 
             SitePack sitePack = new SitePack(getCurrentLink(), "", getCurrentHtmlText());
             sitePack.setHyperlinks(getCurrentHyperlinkList());
 
             return sitePack;
         } else {
-            return null;
+            return null; // return null when it is no one History elements to getting
         }
     }
 
     public SitePack getNextHistory() {
-        if (countHistory < MAX_HISTORY) {
-            countHistory++;
+        if (currentHistoryPosition < MAX_HISTORY && currentHistoryPosition < lastChangedHistoryPosition) {
 
-//            System.out.println(this.getClass().getSimpleName() + " -> getLastHistory() countHistory = " + countHistory);
+            //increasing of actual position for getting next element from History list
+            System.out.println(this.getClass().getSimpleName() + " -> getLastHistory() currentHistoryPosition = " + currentHistoryPosition);
+            System.out.println(this.getClass().getSimpleName() + " -> getLastHistory() lastChangedHistoryPosition= " + lastChangedHistoryPosition);
+
+            currentHistoryPosition++;
+            System.out.println(this.getClass().getSimpleName() + " -> getLastHistory() currentHistoryPosition (++) = " + currentHistoryPosition);
 
             SitePack sitePack = new SitePack(getCurrentLink(), "", getCurrentHtmlText());
             sitePack.setHyperlinks(getCurrentHyperlinkList());
 
             return sitePack;
         } else {
+
+            System.out.println(this.getClass().getSimpleName() + " -> getLastHistory() currentHistoryPosition = " + currentHistoryPosition);
+            System.out.println(this.getClass().getSimpleName() + " -> getLastHistory() lastChangedHistoryPosition = " + lastChangedHistoryPosition);
+
+            System.out.println(this.getClass().getSimpleName() + " -> getLastHistory() -> return null");
+
             return null;
         }
     }
 
     private String getCurrentLink() {
-        return switch (countHistory) {
-            case 5 -> link5;
-            case 4 -> link4;
-            case 3 -> link3;
-            case 2 -> link2;
-            case 1 -> link1;
+        return switch (currentHistoryPosition) {
+            case 5 -> listLinks.get(4);
+            case 4 -> listLinks.get(3);
+            case 3 -> listLinks.get(2);
+            case 2 -> listLinks.get(1);
+            case 1 -> listLinks.get(0);
             default -> null;
         };
     }
 
     private String getCurrentHtmlText() {
-        return switch (countHistory) {
-            case 5 -> htmlText5;
-            case 4 -> htmlText4;
-            case 3 -> htmlText3;
-            case 2 -> htmlText2;
-            case 1 -> htmlText1;
+        return switch (currentHistoryPosition) {
+            case 5 -> listHtmlText.get(4);
+            case 4 -> listHtmlText.get(3);
+            case 3 -> listHtmlText.get(2);
+            case 2 -> listHtmlText.get(1);
+            case 1 -> listHtmlText.get(0);
             default -> null;
         };
     }
 
     private List<Hyperlink> getCurrentHyperlinkList() {
-        return switch (countHistory) {
-            case 5 -> hyperlinkList5;
-            case 4 -> hyperlinkList4;
-            case 3 -> hyperlinkList3;
-            case 2 -> hyperlinkList2;
-            case 1 -> hyperlinkList1;
+
+        System.out.println(getClass().getSimpleName() + " -> getCurrentHyperlinkList() size() = " + listOfListHyperLinks.size());
+
+        return switch (currentHistoryPosition) {
+            case 5 -> listOfListHyperLinks.get(4);
+            case 4 -> listOfListHyperLinks.get(3);
+            case 3 -> listOfListHyperLinks.get(2);
+            case 2 -> listOfListHyperLinks.get(1);
+            case 1 -> listOfListHyperLinks.get(0);
             default -> null;
         };
     }

@@ -7,7 +7,6 @@ import app.tools.History;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.web.WebHistory;
@@ -58,14 +57,13 @@ public class MainController {
         history = History.getInstance();
         progressBar.progressProperty().bind(webView.getEngine().getLoadWorker().progressProperty());
 
-        textFieldInputURL.setText("https://vmarch.github.io/");    //for testing
-//        textFieldInputURL.setText("http://google.com");            //for testing
+//        textFieldInputURL.setText("https://vmarch.github.io/");    //for testing
+        textFieldInputURL.setText("http://google.com");            //for testing
 //        textFieldInputURL.setText("https://newfoundry.de");            //for testing
+//        textFieldInputURL.setText("http://schema.org");            //for testing
 
         myWebView = webView;
         myWebView.getEngine().getHistory().setMaxSize(5);
-
-//        textAreaTextSite.textProperty().bind(urlService.valueProperty());
 
         hyperlinkObservableList = FXCollections.observableArrayList();
         stringListView.setItems(hyperlinkObservableList);
@@ -126,7 +124,6 @@ public class MainController {
 //            myWebView.getEngine().getLoadWorker().runningProperty();
 
 
-
         });
 
         // if failed
@@ -158,22 +155,34 @@ public class MainController {
         }
     }
 
-    public void onBackAction(ActionEvent actionEvent) {
+    public void onBackAction() {
         SitePack sitePack = history.getLastHistory();
 //        System.out.println(this.getClass().getSimpleName() + " -> onBackAction ");
-        textFieldInputURL.setText(sitePack.getUrl());
-        textAreaTextSite.setText(sitePack.getBody());
-        setupListView(sitePack.getHyperlinks());
-        goBackWebView();
+
+        if (sitePack != null) {
+            textFieldInputURL.setText(sitePack.getUrl());
+            textAreaTextSite.setText(sitePack.getBody());
+            setupListView(sitePack.getHyperlinks());
+            goBackWebView();
+        } else {
+            System.out.println(this.getClass().getSimpleName() + " -> oBackAction: sitePack is null");
+        }
     }
 
-    public void onNextAction(ActionEvent actionEvent) {
+    public void onNextAction() {
         SitePack sitePack = history.getNextHistory();
-//        System.out.println(this.getClass().getSimpleName() + " -> onBackAction ");
-        textFieldInputURL.setText(sitePack.getUrl());
-        textAreaTextSite.setText(sitePack.getBody());
-        setupListView(sitePack.getHyperlinks());
-        goForwardWebView();
+        System.out.println(this.getClass().getSimpleName() + " -> onForwardAction ");
+
+        if (sitePack != null) {
+
+            textFieldInputURL.setText(sitePack.getUrl());
+            textAreaTextSite.setText(sitePack.getBody());
+            setupListView(sitePack.getHyperlinks());
+            goForwardWebView();
+        } else {
+            System.out.println(this.getClass().getSimpleName() + " -> onForwardAction: sitePack is null");
+        }
+
     }
 
     public void goBackWebView() {

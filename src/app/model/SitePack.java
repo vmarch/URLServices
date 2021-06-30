@@ -59,8 +59,10 @@ public class SitePack {
 
     public void setHyperlinks(List<Hyperlink> hyperlinkList) {
         List<String> stringList = new ArrayList<>();
-        for (Hyperlink hyperlink : hyperlinkList) {
-            stringList.add(hyperlink.getText());
+        if (hyperlinkList != null) {
+            for (Hyperlink hyperlink : hyperlinkList) {
+                stringList.add(hyperlink.getText());
+            }
         }
         listOfLinks = stringList;
     }

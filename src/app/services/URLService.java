@@ -28,7 +28,7 @@ public class URLService extends Service<String> {
                 StringBuilder sb = new StringBuilder();
                 Scanner scanner = new Scanner(url.openStream());
                 while (scanner.hasNext()) {
-                    sb.append(scanner.nextLine() + "\n");
+                    sb.append(scanner.nextLine()).append("\n");
 
                 }
                 scanner.close();
